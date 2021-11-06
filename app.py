@@ -73,7 +73,7 @@ def save():
 @app.route("/")
 def main():
     if current_user.is_authenticated:
-        return flask.redirect(flask.url_for("index"))
+        return flask.redirect(flask.url_for("home"))
     return flask.redirect(flask.url_for("login"))
 
 
