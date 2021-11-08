@@ -1,20 +1,21 @@
 import requests
+import json
+import os
+from dotenv import find_dotenv, load_dotenv
+
+
+load_dotenv(find_dotenv())
+PLACES_API_KEY = os.getenv("PLACES_API_KEY")
 
 # url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=4825%20dunwoody%20station%20drive&key=ENTER_API_KEY"
 
-# payload = {}
-# headers = {}
-
-# response = requests.request("GET", url, headers=headers, data=payload)
-
-# print(response.text)
-
-
+# fetch address, latitude & longitude coords from Places API
 def getPlaceInfo(placeName):
     url = (
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
         + placeName
-        + "&key=ENTER_API_KEY"
+        + "&key="
+        + PLACES_API_KEY
     )
 
     payload = {}
@@ -22,7 +23,26 @@ def getPlaceInfo(placeName):
 
     response = requests.request("GET", url, headers=headers, data=payload)
 
-    print(response.text)
+    # convert to json so we can pull out data
+    json_data = json.loads(response.text)
+
+    try:
+        # getting relevant data out of json
+        address = json_data["results"][0]["formatted_address"]
+        latitude = json_data["results"][0]["geometry"]["location"]["lat"]
+        longitude = json_data["results"][0]["geometry"]["location"]["lng"]
+
+        print("Address   ========= " + address)
+        print("Latitude  ========= ", latitude)
+        print("Longitude ========= ", longitude)
+
+        # return place info in list
+        return [address, latitude, longitude]
+    except KeyError:
+        print(" !!! PLACES API FETCH FAILED !!!")
 
 
-getPlaceInfo("4815 dunwoody station drive")
+# test it
+# getPlaceInfo("4815 dunwoody station drive")
+# getPlaceInfo("chuck e cheese")
+# getPlaceInfo("voss violins")
