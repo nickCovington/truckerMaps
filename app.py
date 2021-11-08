@@ -54,21 +54,22 @@ def login():
 
 @app.route("/login", methods=["POST"])
 def login_post():
-    username = flask.request.form.get("username")
-    # query database for the username in the form
-    user = username
-    if user:
-        login_user(user)
-        return flask.redirect(flask.url_for("index"))
-    else:
-        return flask.jsonify({"status": 401, "reason": "Username or Password Error"})
-
+    if flask.request.form["btn"] == "login":
+        username = flask.request.form.get("username")
+        # query database for the username in the form
+        user = username
+        if user:
+            login_user(user)
+            return flask.redirect(flask.url_for("index"))
+        else:
+            return flask.jsonify({"status": 401, "reason": "Username or Password Error"})
+    if flask.request.form["btn"] == "signuppage":
+        return flask.redirect(flask.url_for("signup"))
 
 @app.route("/save", methods=["POST"])
 def save():
     # add the warehouse location, name, and deliveries.
     return flask.redirect(flask.url_for("index"))
-
 
 @app.route("/")
 def main():

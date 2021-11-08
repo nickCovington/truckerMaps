@@ -7,7 +7,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  background-image: url("./img/bcimg.jpg");
+  background-image: url("bcimg.jpg");
   
 }
 .lgin {
@@ -63,16 +63,24 @@ input:focus {
       outline: none;
     }
   
-  
+.btn1 {
+  margin-left: 25%;
+  width: 25%;
+}
+.btn2
+{
+  width: 45%;
+}  
 .btn {
     display: inline-block;
-    width: 55%;
+    
     border-radius: 5%;
     background-color:rgb(0, 63, 63);
     border: 1px solid darken(1fb5bf, 5%);
     padding: .5em 2em;
     color: white;
-    margin-left: 25%;}    
+    margin-left: 15%;
+    }    
 .btn:hover {
       background-color: rgb(13, 133, 133);
     }
