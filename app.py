@@ -176,7 +176,6 @@ def save():
     # add the warehouse location, name, and deliveries.
     return flask.redirect(flask.url_for("home"))
 
-
 @app.route("/")
 def main():
     if current_user.is_authenticated:
