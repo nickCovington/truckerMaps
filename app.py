@@ -51,7 +51,7 @@ class User(db.Model, UserMixin):
 
 
 class warehouse(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(120))
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
@@ -59,7 +59,7 @@ class warehouse(db.Model):
 
 
 class delivery(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
     expectedAt = db.Column(db.String(120))
     deliveredAt = db.Column(db.String(120))
     userID = db.Column(db.Integer, unique=True)
@@ -108,7 +108,7 @@ db.create_all()
 @app.route("/index")
 @login_required
 def index():
-    return flask.render_template("index.html")
+    return flask.render_template("home.html")
 
 
 @login_manager.user_loader
