@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body align=center>
+    <br><br>
+    <h1 align=center>Profile Page</h1>
+    <h2>User ID: {{ data["id"] }}</h2>
+    <br>
+    <h2>Username: {{ data["userName"] }}</h2>
+    <br>
+    <h2>Name: {{ data["fName"] }}</h2>
+    <br>
+    <h2>User Type: {{ data["usrType"] }}</h2>
+    <br>
+    <h2>Email: {{ data["email"] }}</h2>
+    <br>
+    <a href="/edit">Update Profile</a>
+    <a href="/home">Homepage</a>
+    <a href="/logout">Logout</a>
+</body>
+
+</html>

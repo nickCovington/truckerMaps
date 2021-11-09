@@ -73,6 +73,10 @@ class RegisterForm(FlaskForm):
         validators=[InputRequired(), Length(min=2, max=63)],
         render_kw={"placeholder": "Username"},
     )
+    usrType = StringField(
+        validators=[InputRequired(), Length(min=7, max=8)],
+        render_kw={"placeholder": "User Type - Manager or Trucker"},
+    )
 
     password = PasswordField(
         validators=[InputRequired(), Length(min=2, max=63)],
@@ -102,12 +106,84 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
+class UpdateForm(FlaskForm):
+    username = StringField(
+        validators=[InputRequired(), Length(min=0, max=63)],
+        render_kw={"placeholder": "Username"},
+    )
+    usrType = StringField(
+        validators=[InputRequired(), Length(min=0, max=8)],
+        render_kw={"placeholder": "Change user type - Manager or Trucker"},
+    )
+    email = StringField(
+        validators=[InputRequired(), Length(min=0, max=63)],
+        render_kw={"placeholder": "Enter new email"},
+    )
+    fName = StringField(
+        validators=[InputRequired(), Length(min=0, max=63)],
+        render_kw={"placeholder": "Update your full name"},
+    )
+
+    submit = SubmitField("Update Profile")
+
+
 db.create_all()
+
+
+def get_profile_details():
+    id = flask_login.current_user.id
+    usrType = flask_login.current_user.usrType
+    userName = flask_login.current_user.username
+    try:
+        email = flask_login.current_user.email
+        fName = flask_login.current_user.fName
+    except:
+        email = "No email given"
+        fName = flask_login.current_user.fName
+    profile_details = {
+        "id": id,
+        "usrType": usrType,
+        "userName": userName,
+        "email": email,
+        "fName": fName,
+    }
+    return profile_details
+
 
 @app.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
-    return flask.render_template("home.html", usern = flask_login.current_user.username)
+
+    return flask.render_template("home.html", usern=flask_login.current_user.username)
+
+
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    return flask.render_template("profile.html", data=get_profile_details())
+
+
+@app.route("/edit", methods=["GET", "POST"])
+@login_required
+def edit():
+    form = UpdateForm()
+    if flask.request.method == "POST":
+        if form.validate_on_submit():
+            curr = User.query.filter_by(
+                username=flask_login.current_user.username
+            ).first()
+            if form.fName.data != None:
+                curr.fName = form.fName.data
+            if form.username.data != None:
+                curr.usernme = form.username.data
+            if form.email.data != None:
+                curr.email = form.email.data
+            if form.usrType.data != None:
+                curr.usrType = form.usrType.data
+            db.session.commit()
+            return flask.redirect(flask.url_for("profile"))
+    return flask.render_template("edit.html", form=form, data=get_profile_details())
+
 
 @app.route("/logout")
 @login_required
@@ -123,7 +199,11 @@ def signup():
 
     if flask.request.method == "POST":
         if form.validate_on_submit():
-            new_user = User(username=form.username.data, password=form.password.data)
+            new_user = User(
+                username=form.username.data,
+                usrType=form.usrType.data,
+                password=form.password.data,
+            )
             db.session.add(new_user)
             db.session.commit()
             return flask.redirect(flask.url_for("login"))
@@ -155,22 +235,11 @@ def invalid():
     return flask.render_template("invalid.html")
 
 
-# @app.route("/login", methods=["POST"])
-# def login_post():
-#     username = flask.request.form.get("username")
-#     # query database for the username in the form
-#     user = username
-#     if user:
-#         login_user(user)
-#         return flask.redirect(flask.url_for("index"))
-#     else:
-#         return flask.jsonify({"status": 401, "reason": "Username or Password Error"})
-
-
 @app.route("/save", methods=["POST"])
 def save():
     # add the warehouse location, name, and deliveries.
     return flask.redirect(flask.url_for("home"))
+
 
 @app.route("/")
 def main():
