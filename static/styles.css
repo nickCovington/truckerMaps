@@ -94,3 +94,11 @@ img{
     margin-left: 25%;
     border-radius: 50%;}
 
+#google-maps-embed{
+    margin: 30px;
+}
+
+#welcome-msg{
+    color: #fff;
+}
+
