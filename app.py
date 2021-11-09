@@ -102,6 +102,9 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
+db.create_all()
+
+
 @app.route("/index")
 @login_required
 def index():
@@ -133,19 +136,25 @@ def signup_post():
     """ ""
 
 
+@app.route("/invalid")
+def invalid():
+    return flask.render_template("invalid.html")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if form.password.data == user.password:
-                login_user(user)
-                return flask.redirect(flask.url_for("home"))
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user:
+                if form.password.data == user.password:
+                    login_user(user)
+                    return flask.redirect(flask.url_for("home"))
+                else:
+                    flask.flash("Invalid password")
             else:
-                flask.flash("Invalid password")
-        else:
-            return flask.redirect(flask.url_for("invalid"))
+                return flask.redirect(flask.url_for("invalid"))
 
     return flask.render_template("login.html", form=form)
 
