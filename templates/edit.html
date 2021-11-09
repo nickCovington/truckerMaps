@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <br><br>
+    <h1 align=center>Update Your Profile</h1>
+    <div id="input">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            Username - current: {{ data["userName"] }}
+            {{ form.username }}<br>
+            <br>
+            User Type - current: {{ data["usrType"] }}
+            {{ form.usrType }}<br>
+            <br>
+            Email - current: {{ data["email"] }}
+            {{ form.email }}<br>
+            <br>
+            Full Name - current: {{ data["fName"] }}
+            {{ form.fName }}<br>
+            <br><br>
+            {{ form.submit }}
+        </form>
+    </div>
+    <a href="/profile">Profile Page</a>
+    <a href="/logout">Logout</a>
+    </div>
+</body>
+
+</html>
