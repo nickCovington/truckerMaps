@@ -5,12 +5,12 @@
     <link rel="stylesheet" href="/static/styles.css" />
 </head>
 
-<body>
+<body align=center>
     <div class="lgin">
         <h2 align=center>User Login</h2>
 
-        <img src="./img/profpic.jpg" alt=""><br><br>
-        <div style="vertical-align: middle;"></div>
+        <img src="/static/profpic.jpg" alt="">
+        <div></div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         {% for message in messages %}
@@ -31,7 +31,9 @@
                 <br><br>
                 {{ form.submit }}
             </form>
+            <a href="/signup">Don't have an account? Sign up here!</a>
         </div>
+
 
     </div>
 

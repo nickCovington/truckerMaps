@@ -51,7 +51,7 @@ class User(db.Model, UserMixin):
 
 
 class warehouse(db.Model):
-    id = db.Column(db.Integer, primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
@@ -59,7 +59,7 @@ class warehouse(db.Model):
 
 
 class delivery(db.Model):
-    id = db.Column(db.Integer, primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True)
     expectedAt = db.Column(db.String(120))
     deliveredAt = db.Column(db.String(120))
     userID = db.Column(db.Integer, unique=True)
@@ -79,7 +79,7 @@ class RegisterForm(FlaskForm):
         render_kw={"placeholder": "Password"},
     )
 
-    submit = SubmitField("Register")
+    submit = SubmitField("SignUp")
 
     def validate_username(self, username):
         existing_user_username = User.query.filter_by(username=username.data).first()
@@ -104,59 +104,55 @@ class LoginForm(FlaskForm):
 
 db.create_all()
 
-
-@app.route("/index")
+@app.route("/home", methods=["GET", "POST"])
 @login_required
-def index():
-    return flask.render_template("home.html")
+def home():
+    return flask.render_template("home.html", usern = flask_login.current_user.username)
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return flask.redirect(flask.url_for("login"))
 
 
-@login_manager.user_loader
-def load_user(user_name):
-    # return the user_name from the database and load the user
-    return
-
-
-@app.route("/signup")
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
-    return flask.render_template("signup.html")
-
-
-@app.route("/signup", methods=["POST"])
-def signup_post():
-    username = flask.request.form.get("username")
     # check if the user from the form is in the database.
-    """""
-    if user:
-        pass
-    else:
-        user = User(username=username)
-        db.session.add(user)
-        db.session.commit()
-    """ ""
+    form = RegisterForm()
 
+    if flask.request.method == "POST":
+        if form.validate_on_submit():
+            new_user = User(username=form.username.data, password=form.password.data)
+            db.session.add(new_user)
+            db.session.commit()
+            return flask.redirect(flask.url_for("login"))
+        else:
+            flask.flash("Username already exists")
 
-@app.route("/invalid")
-def invalid():
-    return flask.render_template("invalid.html")
+    return flask.render_template("signup.html", form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.validate_on_submit():
-            user = User.query.filter_by(username=form.username.data).first()
-            if user:
-                if form.password.data == user.password:
-                    login_user(user)
-                    return flask.redirect(flask.url_for("home"))
-                else:
-                    flask.flash("Invalid password")
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            if form.password.data == user.password:
+                login_user(user)
+                return flask.redirect(flask.url_for("home"))
             else:
-                return flask.redirect(flask.url_for("invalid"))
+                flask.flash("Invalid password")
+        else:
+            return flask.redirect(flask.url_for("invalid"))
 
     return flask.render_template("login.html", form=form)
+
+
+@app.route("/invalid")
+def invalid():
+    return flask.render_template("invalid.html")
 
 
 # @app.route("/login", methods=["POST"])
