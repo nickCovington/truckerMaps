@@ -94,3 +94,33 @@ img{
     margin-left: 25%;
     border-radius: 50%;}
 
+#google-maps-embed{
+    margin: 30px;
+}
+
+#welcome-msg{
+    color: #fff;
+}
+
+#add-location-container{
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  width: 70%;
+  margin: auto;
+  border-radius: 4px;
+}
+
+.flashes{
+  list-style: none;
+}
+
+.flashes li{
+  color: #F5B041;
+}
+
+#add-location-submit:hover{
+  background-color: rgb(13, 133, 133);
+  color: white;
+  cursor: pointer;
+}
+
