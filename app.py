@@ -14,6 +14,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError
+from places_api import getPlaceInfo
 
 import random
 import base64
@@ -153,8 +154,20 @@ def get_profile_details():
 @app.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
+    # if user attempts to add new location
+    if flask.request.method == "POST":
+        locationToAdd = flask.request.form.get("location-to-add")
 
-    return flask.render_template("home.html", usern=flask_login.current_user.username)
+        # placeInfo = [address, latitude, longitude]
+        placeInfo = getPlaceInfo(locationToAdd)
+
+        # TO-DO: need to actually add (address), (latitude), & (longitude) into DB
+        flask.flash(placeInfo[0] + " has been successfully added.")
+
+    return flask.render_template(
+        "home.html",
+        usern=flask_login.current_user.username,
+    )
 
 
 @app.route("/profile", methods=["GET", "POST"])
