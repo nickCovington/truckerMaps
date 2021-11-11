@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 import flask_login
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 from flask_wtf import FlaskForm
+from wtforms import RadioField
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError
 from places_api import getPlaceInfo
@@ -83,6 +84,7 @@ class RegisterForm(FlaskForm):
         validators=[InputRequired(), Length(min=2, max=63)],
         render_kw={"placeholder": "Password"},
     )
+    boolchoice = RadioField('Label', choices=[('manager','Manager'),('trucker','Trucker')])
 
     submit = SubmitField("SignUp")
 
