@@ -31,15 +31,29 @@ def getPlaceInfo(placeName):
         address = json_data["results"][0]["formatted_address"]
         latitude = json_data["results"][0]["geometry"]["location"]["lat"]
         longitude = json_data["results"][0]["geometry"]["location"]["lng"]
+        name = json_data["results"][0]["name"]
 
         print("Address   ========= " + address)
         print("Latitude  ========= ", latitude)
         print("Longitude ========= ", longitude)
+        print("Name =========" + name)
 
         # return place info in list
-        return [address, latitude, longitude]
+        return {
+            "address" : address,
+            "lat" : latitude,
+            "lon" : longitude,
+            "name" : name
+        }
+        # return [address, latitude, longitude, name]
     except KeyError:
         print(" !!! PLACES API FETCH FAILED !!!")
+        return {
+            "address" : "ERROR",
+            "lat" : "ERROR",
+            "lon" : "ERROR",
+            "name" : "ERROR"
+        }
 
 
 # test it

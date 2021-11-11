@@ -53,10 +53,11 @@ class User(db.Model, UserMixin):
 
 class warehouse(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer)
     name = db.Column(db.String(120))
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
-    address = db.Column(db.String(240), unique=True)
+    address = db.Column(db.String(240))
 
 
 class delivery(db.Model):
@@ -154,6 +155,7 @@ def get_profile_details():
 @app.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
+    userID = flask_login.current_user.id
     # if user attempts to add new location
     if flask.request.method == "POST":
         locationToAdd = flask.request.form.get("location-to-add")
@@ -162,11 +164,38 @@ def home():
         placeInfo = getPlaceInfo(locationToAdd)
 
         # TO-DO: need to actually add (address), (latitude), & (longitude) into DB
-        flask.flash(placeInfo[0] + " has been successfully added.")
+        address = placeInfo["address"]
+        latitude = placeInfo["lat"]
+        longitude = placeInfo["lon"]
+        name = placeInfo["name"]
+        
+
+        wexists = warehouse.query.filter_by(address=address, userID=userID).first()
+        if wexists:
+            flask.flash(address + " already exists in your saved list")
+        else:
+            new_w = warehouse(
+                name=name,
+                address=address,
+                lat=latitude,
+                lng=longitude,
+                userID=userID
+            )
+            db.session.add(new_w)
+            db.session.commit()
+
+            flask.flash(placeInfo["address"] + " has been successfully added.")
+    
+    w_list = warehouse.query.filter_by(userID=userID).all()
+    existing_adds = []
+    for wh in w_list:
+        existing_adds.append(wh.address)
 
     return flask.render_template(
         "home.html",
         usern=flask_login.current_user.username,
+        warehouses=existing_adds,
+        len=len(existing_adds),
     )
 
 

@@ -6,7 +6,7 @@
 </head>
 
 <body align=center>
-    <br><br>
+    <br>
     <h1 align=center id="welcome-msg">Welcome, {{ usern }}</h1>
     <div>
         <a href="/profile">Profile Page</a>
@@ -32,6 +32,9 @@
             {% endfor %}
         </ul>
         {% endif %}
+        {% for i in range(len) %}
+        <p class="art_str">{{warehouses[i]}}</p>
+        {% endfor %}
 
         <form action="/home" method="POST">
             <input type="text" name="location-to-add" placeholder="Enter address" required>
