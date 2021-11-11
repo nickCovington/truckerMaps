@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+
+<body>
+    <div class="lgin">
+        <h2 align=center>User Signup</h2>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="invalid_pwd" role="alert">
+            {{message}}
+            <p class="art_str">Try Again</p>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div id="input">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                {{ form.username }}<br>
+                <br>
+                {{ form.usrType }}<br>
+                <br>
+                {{ form.password }}<br>
+                <br><br>
+                <p>{{ form.boolchoice }}</p>
+                {{ form.submit }}
+            </form>
+        </div>
+    </div>
+    <!-- the js script is just to test redirects for the time bieng we ar going to be doing this using 
+            flask to handle this-->
+    <script>
+        window.onload = function () {
+            document.getElementById("lgnform").onsubmit = function () {
+                window.location.replace("login");
+                return false;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
