@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <html>
 
 <head>
@@ -93,3 +94,94 @@
 </body>
 
 </html>
+=======
+<html>
+
+<head>
+    <title>Trucker Maps | Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body align=center>
+    <br><br>
+    <h1 align=center id="welcome-msg">Welcome, {{ usern }}</h1>
+    <div>
+        
+    </div>
+   
+    <div class="row">
+        <div class="col-3">
+          <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-deliveries-tab" data-toggle="pill" href="#v-pills-deliveries" role="tab" aria-controls="v-pills-deliveries" aria-selected="true">Deliveries</a>
+            <a class="nav-link" id="v-pills-warehouses-tab" data-toggle="pill" href="#v-pills-warehouses" role="tab" aria-controls="v-pills-warehouses" aria-selected="false">Add Warehouse</a>
+            <a class="nav-link" id="v-pills-managers-tab" data-toggle="pill" href="#v-pills-managers" role="tab" aria-controls="v-pills-managers" aria-selected="false">Managers</a>
+            <a class="nav-link" id="v-pills-truckers-tab" data-toggle="pill" href="#v-pills-truckers" role="tab" aria-controls="v-pills-truckers" aria-selected="false">Truckers</a>
+            <li class="dropdown">
+                <a class="nav-link" class="dropdown-toggle" data-toggle="dropdown" href="#">Profile <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/profile">Profile Page</a></li>
+                  <li><a href="/logout">Logout</a></li>
+                  <li><a href="#">Submenu </a></li>                        
+                </ul>
+            </li>  
+        </div>
+        </div>
+        <div class="col-9">
+          <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade show active" id="v-pills-deliveries" role="tabpanel" aria-labelledby="v-pills-deliveries-tab">
+                <h3>Deliveries</h3>
+               
+                <p>TABLE HERE</p>
+            </div>
+            <div class="tab-pane fade" id="v-pills-warehouses" role="tabpanel" aria-labelledby="v-pills-warehouses-tab">
+                <h3> New Warehouse</h3> 
+                
+                
+                <div id="add-location-container">
+                    <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11878.39932087234!2d-88.25004333145303!3d41.901462471930415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880eff25238ffb55%3A0x5791996eae56ec23!2sLibbey%20West%20Chicago%20Distribution%20Center!5e0!3m2!1sen!2sus!4v1636498990727!5m2!1sen!2sus"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" id="google-maps-embed">
+                    </iframe>
+                    <h2>Add a new warehouse location:</h2>
+
+                    {% if get_flashed_messages() %}
+                    <ul class="flashes">
+                        {% for msg in get_flashed_messages() %}
+                        <li>{{msg}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    
+                    {% for i in range(len) %}
+                    <li>{{ warehouses[i] }}</li>
+                    {% endfor %}
+
+                    <form action="/home" method="POST">
+                        <input type="text" name="location-to-add" placeholder="Enter address" required>
+                        <input type="submit" value="Add Location" id="add-location-submit">
+                    </form>
+
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-pills-managers" role="tabpanel" aria-labelledby="v-pills-managers-tab">
+                
+            </div>
+            <div class="tab-pane fade" id="v-pills-truckers" role="tabpanel" aria-labelledby="v-pills-truckers-tab">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+</body>
+
+</html>
+>>>>>>> e376f6e38f222cdf3ce6a3b44e586fd4bab1b413
