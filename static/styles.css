@@ -89,6 +89,13 @@ input:focus {
 .btn:focus {
     outline: none;
     }
+.nav-link{
+  color: white;
+  width: fit-content;
+}
+.dropdown{
+  margin-left: 0%;
+}
 img{
     width: 50%;
     margin-left: 25%;
