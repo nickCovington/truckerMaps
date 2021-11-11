@@ -64,6 +64,10 @@
                         </ul>
                         {% endif %}
 
+                        {% for i in range(len %}
+                        <li>{{ warehouses[i] }}</li>
+                        {% endfor %}
+
                         <form action="/home" method="POST">
                             <input type="text" name="location-to-add" placeholder="Enter address" required>
                             <input type="submit" value="Add Location" id="add-location-submit">
