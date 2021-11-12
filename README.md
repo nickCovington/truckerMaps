@@ -9,5 +9,5 @@ Insert user stories, ideal usage, and UI navigation
 As an average user, you will be able to select a target warehouse location from Google Maps and view its respective delivery data.
 
 ## Cloning and usage
-Insert documentation about how to clone and use this app (not heroku link)
+Insert documentation about how to clone and use this app (not heroku link).
 
