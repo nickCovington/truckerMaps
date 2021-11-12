@@ -15,7 +15,7 @@ from flask_wtf import FlaskForm
 from wtforms import RadioField
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError
-from places_api import getPlaceInfo
+from places_api import PLACES_API_KEY, getPlaceInfo
 
 import random
 import base64
@@ -85,7 +85,9 @@ class RegisterForm(FlaskForm):
         validators=[InputRequired(), Length(min=2, max=63)],
         render_kw={"placeholder": "Password"},
     )
-    boolchoice = RadioField('Label', choices=[('manager','Manager'),('trucker','Trucker')])
+    boolchoice = RadioField(
+        "Label", choices=[("manager", "Manager"), ("trucker", "Trucker")]
+    )
 
     submit = SubmitField("SignUp")
 
@@ -158,36 +160,41 @@ def get_profile_details():
 @login_required
 def home():
     userID = flask_login.current_user.id
+
+    googleMapURL = None
+
     # if user attempts to add new location
     if flask.request.method == "POST":
         locationToAdd = flask.request.form.get("location-to-add")
 
-        # placeInfo = [address, latitude, longitude]
+        # url to dynamically generate a google map based on user-input
+        googleMapURL = (
+            "https://www.google.com/maps/embed/v1/place?key="
+            + PLACES_API_KEY
+            + "&q="
+            + locationToAdd
+        )
+
+        # placeInfo = dictionary containing {address, lat, lon, name}
         placeInfo = getPlaceInfo(locationToAdd)
 
-        # TO-DO: need to actually add (address), (latitude), & (longitude) into DB
         address = placeInfo["address"]
         latitude = placeInfo["lat"]
         longitude = placeInfo["lon"]
         name = placeInfo["name"]
-        
 
         wexists = warehouse.query.filter_by(address=address, userID=userID).first()
         if wexists:
             flask.flash(address + " already exists in your saved list")
         else:
             new_w = warehouse(
-                name=name,
-                address=address,
-                lat=latitude,
-                lng=longitude,
-                userID=userID
+                name=name, address=address, lat=latitude, lng=longitude, userID=userID
             )
             db.session.add(new_w)
             db.session.commit()
 
             flask.flash(placeInfo["address"] + " has been successfully added.")
-    
+
     w_list = warehouse.query.filter_by(userID=userID).all()
     existing_adds = []
     for wh in w_list:
@@ -198,6 +205,7 @@ def home():
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
+        googleMapURL=googleMapURL,
     )
 
 

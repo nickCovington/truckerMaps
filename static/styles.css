@@ -111,7 +111,7 @@ img{
 
 #add-location-container{
   background: rgba(0,0,0,.55);
-  color: #fff;
+  color: white;
   width: 70%;
   border-radius: 4px;
 }
@@ -128,5 +128,16 @@ img{
   background-color: rgb(13, 133, 133);
   color: white;
   cursor: pointer;
+}
+
+#new-warehouse{
+  color: white;
+}
+
+.warehouse-list{
+  list-style: none;
+  text-align: center;
+  border: 1px solid #F5B041;
+  padding: 10px;
 }
 
