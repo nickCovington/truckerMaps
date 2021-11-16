@@ -63,6 +63,8 @@ class warehouse(db.Model):
 
 class delivery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    startDate = db.Column(db.String(120))
+    endDate = db.Column(db.String(120))
     expectedAt = db.Column(db.String(120))
     deliveredAt = db.Column(db.String(120))
     userID = db.Column(db.Integer, unique=True)
@@ -205,7 +207,70 @@ def home():
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
+        len2=0,
         googleMapURL=googleMapURL,
+    )
+
+@app.route("/add_delivery", methods=["GET", "POST"])
+@login_required
+def add_delivery():
+    userID = flask_login.current_user.id
+    googleMapURL = None
+
+    if flask.request.method == "POST":
+        startDate = flask.request.form.get("start")
+        expectedAt = flask.request.form.get("expected")
+        details = flask.request.form.get("note")
+        googleMapURL = (
+            "https://www.google.com/maps/embed/v1/place?key="
+            + PLACES_API_KEY
+            + "&q="
+            + flask.request.form.get("address")
+        )
+        placeInfo = getPlaceInfo(flask.request.form.get("address"))
+        wAdd = placeInfo["address"]
+        wexists = warehouse.query.filter_by(address=wAdd, userID=userID).first()
+        if not wexists:
+            new_w = warehouse(
+                name=placeInfo["name"], address=wAdd, lat=placeInfo["lat"], lng=placeInfo["lon"], userID=userID
+            )
+            db.session.add(new_w)
+            db.session.commit()
+        wID = warehouse.query.filter_by(address=wAdd, userID=userID).first().id
+
+        dexists = delivery.query.filter_by(userID=userID, expectedAt=expectedAt, warehouseID=wID)
+        if dexists:
+            flask.flash("This exact delivery already exists")
+        else:
+            new_d = delivery(
+                startDate=startDate, expectedAt=expectedAt, userID=userID, warehouseID=wID, details=details   
+            )
+            db.session.add(new_d)
+            db.session.commit()
+
+    w_list = warehouse.query.filter_by(userID=userID).all()
+    existing_adds = []
+    for wh in w_list:
+        existing_adds.append(wh.address)
+    
+    d_list = delivery.query.filter_by(userID=userID).all()
+    existing_dels = []
+    for de in d_list:
+        existing_dels.append(de.address)
+    
+    try:
+        dlen = len(existing_dels)
+    except:
+        dlen = 0
+    
+    return flask.render_template(
+        "home.html", 
+        usern=flask_login.current_user.username,
+        warehouses=existing_adds,
+        len=len(existing_adds),
+        len2=dlen,
+        deliveries=existing_dels,
+        googleMapURL=googleMapURL
     )
 
 

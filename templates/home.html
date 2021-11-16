@@ -50,6 +50,24 @@
                     </iframe>
                     {% endif %}
 
+                    {% for i in range(len2) %}
+                        <li class="warehouse-list">{{ deliveries[i] }}</li>
+                    {% endfor %}
+
+                    <div id="input">
+                        <form method="POST" action="/add_delivery">
+                            {{ form.hidden_tag() }}
+                            {{ form.start }}<br>
+                            <br>
+                            {{ form.expected }}<br>
+                            <br>
+                            {{ form.address }}<br>
+                            <br>
+                            {{ form.note }}<br>
+                            <br><br>
+                        </form>
+                    </div>
+
                     <p>TABLE HERE</p>
                 </div>
                 <div class="tab-pane fade" id="v-pills-warehouses" role="tabpanel"
