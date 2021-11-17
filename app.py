@@ -67,8 +67,8 @@ class delivery(db.Model):
     endDate = db.Column(db.String(120))
     expectedAt = db.Column(db.String(120))
     deliveredAt = db.Column(db.String(120))
-    userID = db.Column(db.Integer, unique=True)
-    warehouseID = db.Column(db.Integer, unique=True)
+    userID = db.Column(db.Integer)
+    warehouseID = db.Column(db.Integer)
     details = db.Column(db.String(240))
 
 
@@ -238,10 +238,12 @@ def add_delivery():
             db.session.commit()
         wID = warehouse.query.filter_by(address=wAdd, userID=userID).first().id
 
-        dexists = delivery.query.filter_by(userID=userID, expectedAt=expectedAt, warehouseID=wID)
+        dexists = delivery.query.filter_by(userID=userID, expectedAt=expectedAt, warehouseID=wID).first()
         if dexists:
+            print("not new")
             flask.flash("This exact delivery already exists")
         else:
+            print("new delivery")
             new_d = delivery(
                 startDate=startDate, expectedAt=expectedAt, userID=userID, warehouseID=wID, details=details   
             )
@@ -253,11 +255,12 @@ def add_delivery():
     for wh in w_list:
         existing_adds.append(wh.address)
     
+    print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
     for de in d_list:
-        existing_dels.append(de.address)
-    
+        existing_dels.append([de.warehouseID, de.startDate, de.expectedAt])
+
     try:
         dlen = len(existing_dels)
     except:
