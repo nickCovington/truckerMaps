@@ -46,4 +46,4 @@ def getPlaceInfo(placeName):
         return {"address": "ERROR", "lat": "ERROR", "lon": "ERROR", "name": "ERROR"}
 
 
-getPlaceInfo("vermack pool")
+# getPlaceInfo("vermack pool")
