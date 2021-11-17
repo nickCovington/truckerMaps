@@ -65,8 +65,8 @@ class delivery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     expectedAt = db.Column(db.String(120))
     deliveredAt = db.Column(db.String(120))
-    userID = db.Column(db.Integer, unique=True)
-    warehouseID = db.Column(db.Integer, unique=True)
+    userID = db.Column(db.Integer)
+    warehouseID = db.Column(db.Integer)
     details = db.Column(db.String(240))
 
 
