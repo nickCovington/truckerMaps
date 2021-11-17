@@ -43,12 +43,31 @@
                 <div class="tab-pane fade show active" id="v-pills-deliveries" role="tabpanel"
                     aria-labelledby="v-pills-deliveries-tab">
                     <h3>Deliveries</h3>
+                    {% if get_flashed_messages() %}
+                        <ul class="flashes">
+                            {% for msg in get_flashed_messages() %}
+                            <li>{{msg}}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
 
                     {% if googleMapURL %}
                     <iframe width="600" height="450" style="border:0" loading="lazy" allowfullscreen
                         src={{googleMapURL}}>
                     </iframe>
                     {% endif %}
+
+                    {% for i in range(len2) %}
+                        <li class="warehouse-list">{{ deliveries[i] }}</li>
+                    {% endfor %}
+
+                    <form action="/add_delivery" method="POST">
+                        <input type="text" name="address" placeholder="Enter address" required>
+                        <input type="text" name="start" placeholder="Enter start date and time" required>
+                        <input type="text" name="expected" placeholder="Enter expected delivery time" required>
+                        <input type="text" name="note" placeholder="Enter any details" required>
+                        <input type="submit" value="Add Location" id="add-location-submit">
+                    </form>
 
                     <p>TABLE HERE</p>
                 </div>
