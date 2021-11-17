@@ -36,27 +36,14 @@ def getPlaceInfo(placeName):
         print("Address   ========= " + address)
         print("Latitude  ========= ", latitude)
         print("Longitude ========= ", longitude)
-        print("Name =========" + name)
+        print("Name ========= ", name)
 
         # return place info in list
-        return {
-            "address" : address,
-            "lat" : latitude,
-            "lon" : longitude,
-            "name" : name
-        }
+        return {"address": address, "lat": latitude, "lon": longitude, "name": name}
         # return [address, latitude, longitude, name]
     except KeyError:
         print(" !!! PLACES API FETCH FAILED !!!")
-        return {
-            "address" : "ERROR",
-            "lat" : "ERROR",
-            "lon" : "ERROR",
-            "name" : "ERROR"
-        }
+        return {"address": "ERROR", "lat": "ERROR", "lon": "ERROR", "name": "ERROR"}
 
 
-# test it
-# getPlaceInfo("4815 dunwoody station drive")
-# getPlaceInfo("chuck e cheese")
-# getPlaceInfo("voss violins")
+getPlaceInfo("vermack pool")
