@@ -1,2 +1,7 @@
 flask
-Flask-WTF
+flask-wtf
+python-dotenv
+flask-sqlalchemy
+requests
+flask-login
+postgres
