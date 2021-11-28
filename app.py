@@ -199,16 +199,34 @@ def home():
 
     w_list = warehouse.query.filter_by(userID=userID).all()
     existing_adds = []
+    add_ids = []
     for wh in w_list:
         existing_adds.append(wh.address)
+        add_ids.append(wh.id)
+    
+    print(f"before d_list id={userID}")
+    d_list = delivery.query.filter_by(userID=userID).all()
+    existing_dels = []
+    del_ids = []
+    for de in d_list:
+        existing_dels.append([de.warehouseID, de.startDate, de.expectedAt])
+        del_ids.append(de.id)
 
+    try:
+        dlen = len(existing_dels)
+    except:
+        dlen = 0
+    
     return flask.render_template(
-        "home.html",
+        "home.html", 
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
-        len2=0,
+        len2=dlen,
+        deliveries=existing_dels,
         googleMapURL=googleMapURL,
+        del_ids=del_ids,
+        wh_ids=add_ids
     )
 
 @app.route("/add_delivery", methods=["GET", "POST"])
@@ -252,14 +270,18 @@ def add_delivery():
 
     w_list = warehouse.query.filter_by(userID=userID).all()
     existing_adds = []
+    add_ids = []
     for wh in w_list:
         existing_adds.append(wh.address)
+        add_ids.append(wh.id)
     
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
+    del_ids = []
     for de in d_list:
         existing_dels.append([de.warehouseID, de.startDate, de.expectedAt])
+        del_ids.append(de.id)
 
     try:
         dlen = len(existing_dels)
@@ -273,7 +295,9 @@ def add_delivery():
         len=len(existing_adds),
         len2=dlen,
         deliveries=existing_dels,
-        googleMapURL=googleMapURL
+        googleMapURL=googleMapURL,
+        del_ids=del_ids,
+        wh_ids=add_ids
     )
 
 
@@ -367,5 +391,30 @@ def main():
         return flask.redirect(flask.url_for("home"))
     return flask.redirect(flask.url_for("login"))
 
+@app.route('/deleteD/<int:id>')
+def deleteD(id):
+    del_to_delete = delivery.query.get_or_404(id)
+
+    try:
+        db.session.delete(del_to_delete)
+        db.session.commit()
+        flask.flash("Delivery deleted successfully")
+        return flask.redirect(flask.url_for("home"))
+    except:
+        flask.flash("Unable to delete delivery")
+        return flask.redirect(flask.url_for("home"))
+
+@app.route('/deleteW/<int:id>')
+def deleteW(id):
+    del_to_delete = warehouse.query.get_or_404(id)
+
+    try:
+        db.session.delete(del_to_delete)
+        db.session.commit()
+        flask.flash("Warehouse deleted successfully")
+        return flask.redirect(flask.url_for("home"))
+    except:
+        flask.flash("Unable to delete warehouse")
+        return flask.redirect(flask.url_for("home"))
 
 app.run(host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=False)

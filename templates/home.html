@@ -58,7 +58,7 @@
                     {% endif %}
 
                     {% for i in range(len2) %}
-                        <li class="warehouse-list">{{ deliveries[i] }}</li>
+                        <li class="warehouse-list">{{ deliveries[i] }} <a href="{{ url_for( 'deleteD', id=del_ids[i]) }}">Delete</a></li>
                     {% endfor %}
 
                     <form action="/add_delivery" method="POST">
@@ -69,7 +69,6 @@
                         <input type="submit" value="Add Location" id="add-location-submit">
                     </form>
 
-                    <p>TABLE HERE</p>
                 </div>
                 <div class="tab-pane fade" id="v-pills-warehouses" role="tabpanel"
                     aria-labelledby="v-pills-warehouses-tab">
@@ -88,7 +87,7 @@
                         <h2>Current Locations:</h2>
 
                         {% for i in range(len) %}
-                        <li class="warehouse-list">{{ warehouses[i] }}</li>
+                        <li class="warehouse-list">{{ warehouses[i] }} <a href="{{ url_for( 'deleteW', id=wh_ids[i]) }}">Delete</a></li>
                         {% endfor %}
 
                         <br>
