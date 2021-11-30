@@ -9,7 +9,7 @@
     <div class="lgin">
         <h2 align=center>User Login</h2>
 
-        <img src="/static/profpic.jpg" alt="">
+        <img id="login-photo" src="/static/profpic.jpg" alt="">
         <div></div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -31,14 +31,14 @@
                 <br><br>
                 {{ form.submit }}
             </form>
-            <a href="/signup">Don't have an account? Sign up here!</a>
+            <a id="sign-up-msg" href="/signup">Don't have an account? Sign up here!</a>
         </div>
 
 
     </div>
 
 
-<!--         <form name="lgnform" id="lgnform" method='POST' action ="/login">
+    <!--         <form name="lgnform" id="lgnform" method='POST' action ="/login">
             <img src="/static/profpic.jpg" alt=""><br><br>
             <input type="text" title="username" id="uname" placeholder="username" />
             <input type="password" title="password" id="psw" placeholder="password" />
