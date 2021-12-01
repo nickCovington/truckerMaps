@@ -19,12 +19,12 @@
     <div class="row">
         <div class="col-3">
             <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link active" id="v-pills-deliveries-tab" data-toggle="pill" href="#v-pills-deliveries"
+                <a class="nav-link {{deleviry_tab}}" id="v-pills-deliveries-tab" data-toggle="pill" href="#v-pills-deliveries"
                     role="tab" aria-controls="v-pills-deliveries" aria-selected="true">Deliveries</a>
-                <a class="nav-link" id="v-pills-warehouses-tab" data-toggle="pill" href="#v-pills-warehouses" role="tab"
-                    aria-controls="v-pills-warehouses" aria-selected="false">Add Warehouse</a>
-                <a class="nav-link" id="v-pills-managers-tab" data-toggle="pill" href="#v-pills-managers" role="tab"
-                    aria-controls="v-pills-managers" aria-selected="false">Managers</a>
+                <a class="nav-link {{nwarehouses_tab}}" id="v-pills-warehouses-tab" data-toggle="pill" href="#v-pills-nwarehouses" role="tab"
+                    aria-controls="v-pills-nwarehouses" aria-selected="false">Add Warehouse</a>
+                <a class="nav-link {{warehouses_tab}}" id="v-pills-warehouses-tab" data-toggle="pill" href="#v-pills-warehouses" role="tab"
+                    aria-controls="v-pills-warehouses" aria-selected="false">Warehouse</a>
                 <a class="nav-link" id="v-pills-truckers-tab" data-toggle="pill" href="#v-pills-truckers" role="tab"
                     aria-controls="v-pills-truckers" aria-selected="false">Truckers</a>
                 <li class="dropdown">
@@ -40,16 +40,16 @@
         </div>
         <div class="col-9">
             <div class="tab-content" id="v-pills-tabContent">
-                <div class="tab-pane fade show active" id="v-pills-deliveries" role="tabpanel"
+                <div class="tab-pane fade {{a}}" id="v-pills-deliveries" role="tabpanel"
                     aria-labelledby="v-pills-deliveries-tab">
                     <h3>Deliveries</h3>
                     {% if get_flashed_messages() %}
-                    <ul class="flashes">
-                        {% for msg in get_flashed_messages() %}
-                        <li>{{msg}}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
+                        <ul class="flashes">
+                            {% for msg in get_flashed_messages() %}
+                            <li>{{msg}}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
 
                     {% if googleMapURL %}
                     <iframe width="600" height="450" style="border:0" loading="lazy" allowfullscreen
@@ -58,21 +58,20 @@
                     {% endif %}
 
                     {% for i in range(len2) %}
-                    <li class="warehouse-list">{{ deliveries[i] }} <a
-                            href="{{ url_for( 'deleteD', id=del_ids[i]) }}">Delete</a></li>
+                        <li class="warehouse-list">{{ deliveries[i] }} <a href="{{ url_for( 'deleteD', id=del_ids[i]) }}">Delete</a></li>
                     {% endfor %}
 
                     <form action="/add_delivery" method="POST">
                         <input type="text" name="address" placeholder="Enter address" required>
-                        <input type="date" name="start" placeholder="Enter start date and time" required>
-                        <input type="date" name="expected" placeholder="Enter expected delivery time" required>
+                        <input type="text" name="start" placeholder="Enter start date and time" required>
+                        <input type="text" name="expected" placeholder="Enter expected delivery time" required>
                         <input type="text" name="note" placeholder="Enter any details" required>
                         <input type="submit" value="Add Location" id="add-location-submit">
                     </form>
 
                 </div>
-                <div class="tab-pane fade" id="v-pills-warehouses" role="tabpanel"
-                    aria-labelledby="v-pills-warehouses-tab">
+                <div class="tab-pane fade{{b}}" id="v-pills-nwarehouses" role="tabpanel"
+                    aria-labelledby="v-pills-nwarehouses-tab">
                     <h3 id="new-warehouse"> New Warehouse</h3>
 
 
@@ -87,23 +86,39 @@
 
                         <h2>Current Locations:</h2>
 
-                        {% for i in range(len) %}
-                        <li class="warehouse-list">{{ warehouses[i] }} <a
-                                href="{{ url_for( 'deleteW', id=wh_ids[i]) }}">Delete</a></li>
-                        {% endfor %}
+                        {% for i in range(len3) %}
+                        <li class="warehouse-list">{{ newadd[i] }} 
+                            <button id="wh{{loop.index}}" onclick="setValue('{{newadd[i]}}','wh{{loop.index}}')">Add Warehouse</button></li>
+                     
+                        {% endfor %}   
+                     
 
                         <br>
 
                         <h2>Add a new warehouse location:</h2>
 
                         <form action="/home" method="POST">
-                            <input type="text" name="location-to-add" placeholder="Enter address" required>
-                            <input type="submit" value="Add Location" id="add-location-submit">
-                        </form>
+                            <input type="text"  id ="sbox" name="location-to-add" placeholder="Enter address" required >
+                            <input type="hidden" id="selectwh" name="selectwh" value="none0">
+                            <input type="submit" name = addwhs value="SearchLocation" id="add-location-submit">
+                            <input type="submit" name = addwhs value="AddLocation" id="add-location-submit">
+                        </form>   
+                        <script>
+                        function setValue(adval,id) {
+                            document.getElementById("selectwh").setAttribute('value', adval);
+                            document.getElementById(id).innerHTML="Selected";
+                            document.getElementById("sbox").setAttribute('value', adval);
+                            console.log(document.getElementById("selectwh").value);
+                        }
+                        </script>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="v-pills-managers" role="tabpanel" aria-labelledby="v-pills-managers-tab">
-
+                <div class="tab-pane fade {{c}}" id="v-pills-warehouses" role="tabpanel" aria-labelledby="v-pills-warehouses-tab">
+                    <div id="add-location-container">
+                        {% for i in range(len) %}
+                            <li class="warehouse-list">{{ warehouses[i] }} <a href="{{ url_for( 'deleteW', id=wh_ids[i]) }}">Delete</a></li>
+                        {% endfor %}
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="v-pills-truckers" role="tabpanel" aria-labelledby="v-pills-truckers-tab">
 

@@ -15,7 +15,7 @@ from flask_wtf import FlaskForm
 from wtforms import RadioField
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError
-from places_api import PLACES_API_KEY, getPlaceInfo
+from places_api import PLACES_API_KEY, getPlaceInfo, addresslist
 
 import random
 import base64
@@ -167,35 +167,51 @@ def home():
 
     # if user attempts to add new location
     if flask.request.method == "POST":
-        locationToAdd = flask.request.form.get("location-to-add")
 
-        # url to dynamically generate a google map based on user-input
-        googleMapURL = (
-            "https://www.google.com/maps/embed/v1/place?key="
-            + PLACES_API_KEY
-            + "&q="
-            + locationToAdd
-        )
-
-        # placeInfo = dictionary containing {address, lat, lon, name}
-        placeInfo = getPlaceInfo(locationToAdd)
-
-        address = placeInfo["address"]
-        latitude = placeInfo["lat"]
-        longitude = placeInfo["lon"]
-        name = placeInfo["name"]
-
-        wexists = warehouse.query.filter_by(address=address, userID=userID).first()
-        if wexists:
-            flask.flash(address + " already exists in your saved list")
-        else:
-            new_w = warehouse(
-                name=name, address=address, lat=latitude, lng=longitude, userID=userID
+        if flask.request.form["addwhs"] == "SearchLocation":
+            locationToAdd = flask.request.form.get("location-to-add")
+        
+             # url to dynamically generate a google map based on user-input
+            googleMapURL = (
+                "https://www.google.com/maps/embed/v1/place?key="
+                + PLACES_API_KEY
+                + "&q="
+                + locationToAdd
             )
-            db.session.add(new_w)
-            db.session.commit()
 
-            flask.flash(placeInfo["address"] + " has been successfully added.")
+            # placeInfo = dictionary containing {address, lat, lon, name}
+            placeInfo = getPlaceInfo(locationToAdd)
+
+         
+        if flask.request.form["addwhs"] == "AddLocation":
+            locationToAdd = flask.request.form.get("selectwh")
+            if locationToAdd == "none0":
+                flask.flash("search location and select one from list before adding location")
+            else:
+                googleMapURL = (
+                "https://www.google.com/maps/embed/v1/place?key="
+                + PLACES_API_KEY
+                + "&q="
+                + locationToAdd
+                )
+                placeInfo = getPlaceInfo(locationToAdd)
+
+                address = placeInfo["address"]
+                latitude = placeInfo["lat"]
+                longitude = placeInfo["lon"]
+                name = placeInfo["name"]
+
+                wexists = warehouse.query.filter_by(address=address, userID=userID).first()
+                if wexists:
+                    flask.flash(address + " already exists in your saved list")
+                else:
+                    new_w = warehouse(
+                        name=name, address=address, lat=latitude, lng=longitude, userID=userID
+                    )
+                    db.session.add(new_w)
+                    db.session.commit()
+
+                    flask.flash(placeInfo["address"] + " has been successfully added.")
 
     w_list = warehouse.query.filter_by(userID=userID).all()
     existing_adds = []
@@ -218,11 +234,20 @@ def home():
         dlen = 0
     
     return flask.render_template(
-        "home.html", 
+        "home.html",
+        delivery_tab = "",
+        nwarehouses_tab = "active",
+        booltab = ["false","true","false"],
+        warehouse_tab = "",
+        a = " ",
+        b = "show active",
+        c = "", 
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
         len2=dlen,
+        len3 = len(addresslist),
+        newadd = addresslist,
         deliveries=existing_dels,
         googleMapURL=googleMapURL,
         del_ids=del_ids,
@@ -289,7 +314,13 @@ def add_delivery():
         dlen = 0
     
     return flask.render_template(
-        "home.html", 
+        "home.html",
+        nwarehouses_tab  = "",
+        delivery_tab = "active",
+        booltab = ["true","false","false"],
+        warehouse_tab ="",
+        a = " ",
+        b = "show active",   
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
