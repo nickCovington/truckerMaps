@@ -25,18 +25,20 @@ app = flask.Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.config["SECRET_KEY"] = "testing"
 
+
 db = SQLAlchemy(app)
 
 # app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL").replace(
 #     "://", "ql://", 1
-#)
+# )
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-num =[]
+num = []
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -165,8 +167,8 @@ def home():
 
         if flask.request.form["addwhs"] == "SearchLocation":
             locationToAdd = flask.request.form.get("location-to-add")
-        
-             # url to dynamically generate a google map based on user-input
+
+            # url to dynamically generate a google map based on user-input
             googleMapURL = (
                 "https://www.google.com/maps/embed/v1/place?key="
                 + PLACES_API_KEY
@@ -177,17 +179,18 @@ def home():
             # placeInfo = dictionary containing {address, lat, lon, name}
             placeInfo = getPlaceInfo(locationToAdd)
 
-         
         if flask.request.form["addwhs"] == "AddLocation":
             locationToAdd = flask.request.form.get("selectwh")
             if locationToAdd == "none0":
-                flask.flash("search location and select one from list before adding location")
+                flask.flash(
+                    "search location and select one from list before adding location"
+                )
             else:
                 googleMapURL = (
-                "https://www.google.com/maps/embed/v1/place?key="
-                + PLACES_API_KEY
-                + "&q="
-                + locationToAdd
+                    "https://www.google.com/maps/embed/v1/place?key="
+                    + PLACES_API_KEY
+                    + "&q="
+                    + locationToAdd
                 )
                 placeInfo = getPlaceInfo(locationToAdd)
 
@@ -196,18 +199,23 @@ def home():
                 longitude = placeInfo["lon"]
                 name = placeInfo["name"]
 
-                wexists = warehouse.query.filter_by(address=address, userID=userID).first()
+                wexists = warehouse.query.filter_by(
+                    address=address, userID=userID
+                ).first()
                 if wexists:
                     flask.flash(address + " already exists in your saved list")
                 else:
                     new_w = warehouse(
-                        name=name, address=address, lat=latitude, lng=longitude, userID=userID
+                        name=name,
+                        address=address,
+                        lat=latitude,
+                        lng=longitude,
+                        userID=userID,
                     )
                     db.session.add(new_w)
                     db.session.commit()
 
                     flask.flash(placeInfo["address"] + " has been successfully added.")
-  
 
     w_list = warehouse.query.filter_by(userID=userID).all()
     existing_adds = []
@@ -217,7 +225,7 @@ def home():
         wh_names.append(wh.name)
         existing_adds.append(wh.address)
         add_ids.append(wh.id)
-    
+
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
@@ -231,48 +239,49 @@ def home():
     except:
         dlen = 0
     d = 0
-    if len(num)==2:
+    if len(num) == 2:
         num.clear()
         return flask.render_template(
-        "home.html",
-        delivery_tab = "",
-        nwarehouses_tab = "",
-        warehouse_tab = "active",
-        a = "",
-        b = "",
-        c = "show active",
-        warenames = wh_names, 
-        usern=flask_login.current_user.username,
-        warehouses=existing_adds,
-        len=len(existing_adds),
-        len2=dlen,
-        len3 = len(addresslist),
-        newadd = addresslist,
-        deliveries=existing_dels,
-        googleMapURL=googleMapURL,
-        del_ids=del_ids,
-        wh_ids=add_ids
-    )
+            "home.html",
+            delivery_tab="",
+            nwarehouses_tab="",
+            warehouse_tab="active",
+            a="",
+            b="",
+            c="show active",
+            warenames=wh_names,
+            usern=flask_login.current_user.username,
+            warehouses=existing_adds,
+            len=len(existing_adds),
+            len2=dlen,
+            len3=len(addresslist),
+            newadd=addresslist,
+            deliveries=existing_dels,
+            googleMapURL=googleMapURL,
+            del_ids=del_ids,
+            wh_ids=add_ids,
+        )
     return flask.render_template(
         "home.html",
-        delivery_tab = "",
-        nwarehouses_tab = "active",
-        warehouse_tab = "",
-        warenames = wh_names, 
-        a = " ",
-        b = "show active",
-        c = "", 
+        delivery_tab="",
+        nwarehouses_tab="active",
+        warehouse_tab="",
+        warenames=wh_names,
+        a=" ",
+        b="show active",
+        c="",
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
         len2=dlen,
-        len3 = len(addresslist),
-        newadd = addresslist,
+        len3=len(addresslist),
+        newadd=addresslist,
         deliveries=existing_dels,
         googleMapURL=googleMapURL,
         del_ids=del_ids,
-        wh_ids=add_ids
+        wh_ids=add_ids,
     )
+
 
 @app.route("/add_delivery", methods=["GET", "POST"])
 @login_required
@@ -295,20 +304,30 @@ def add_delivery():
         wexists = warehouse.query.filter_by(address=wAdd, userID=userID).first()
         if not wexists:
             new_w = warehouse(
-                name=placeInfo["name"], address=wAdd, lat=placeInfo["lat"], lng=placeInfo["lon"], userID=userID
+                name=placeInfo["name"],
+                address=wAdd,
+                lat=placeInfo["lat"],
+                lng=placeInfo["lon"],
+                userID=userID,
             )
             db.session.add(new_w)
             db.session.commit()
         wID = warehouse.query.filter_by(address=wAdd, userID=userID).first().id
 
-        dexists = delivery.query.filter_by(userID=userID, expectedAt=expectedAt, warehouseID=wID).first()
+        dexists = delivery.query.filter_by(
+            userID=userID, expectedAt=expectedAt, warehouseID=wID
+        ).first()
         if dexists:
             print("not new")
             flask.flash("This exact delivery already exists")
         else:
             print("new delivery")
             new_d = delivery(
-                startDate=startDate, expectedAt=expectedAt, userID=userID, warehouseID=wID, details=details   
+                startDate=startDate,
+                expectedAt=expectedAt,
+                userID=userID,
+                warehouseID=wID,
+                details=details,
             )
             db.session.add(new_d)
             db.session.commit()
@@ -321,7 +340,7 @@ def add_delivery():
         wh_names.append(wh.name)
         existing_adds.append(wh.address)
         add_ids.append(wh.id)
-    
+
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
@@ -334,15 +353,15 @@ def add_delivery():
         dlen = len(existing_dels)
     except:
         dlen = 0
-    
+
     return flask.render_template(
         "home.html",
-        nwarehouses_tab  = "",
-        delivery_tab = "active",
-        warehouse_tab ="",
-        a = " ",
-        b = "show active", 
-        warenames = wh_names,   
+        nwarehouses_tab="",
+        delivery_tab="active",
+        warehouse_tab="",
+        a=" ",
+        b="show active",
+        warenames=wh_names,
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
@@ -350,7 +369,7 @@ def add_delivery():
         deliveries=existing_dels,
         googleMapURL=googleMapURL,
         del_ids=del_ids,
-        wh_ids=add_ids
+        wh_ids=add_ids,
     )
 
 
@@ -444,7 +463,8 @@ def main():
         return flask.redirect(flask.url_for("home"))
     return flask.redirect(flask.url_for("login"))
 
-@app.route('/deleteD/<int:id>')
+
+@app.route("/deleteD/<int:id>")
 def deleteD(id):
     del_to_delete = delivery.query.get_or_404(id)
 
@@ -457,7 +477,8 @@ def deleteD(id):
         flask.flash("Unable to delete delivery")
         return flask.redirect(flask.url_for("home"))
 
-@app.route('/deleteW/<int:id>')
+
+@app.route("/deleteW/<int:id>")
 def deleteW(id):
     del_to_delete = warehouse.query.get_or_404(id)
     num.clear()
@@ -472,5 +493,6 @@ def deleteW(id):
     except:
         flask.flash("Unable to delete warehouse")
         return flask.redirect(flask.url_for("home"))
+
 
 app.run(host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=False)
