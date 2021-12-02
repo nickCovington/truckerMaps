@@ -60,10 +60,25 @@
                     {% for i in range(len2) %}
                         <li class="warehouse-list">{{ deliveries[i] }} <a href="{{ url_for( 'deleteD', id=del_ids[i]) }}">Delete</a></li>
                     {% endfor %}
+                    <script>
+                        function selectwh(location)
+                        {
+                            document.getElementById("adr").setAttribute('value', location);
+                        }
+                    </script>
 
                     <form action="/add_delivery" method="POST">
-                        <input type="text" name="address" placeholder="Enter address" required>
+                        <label for="cars">Exisiting Warehouse:</label>
+                        
+                        <select onclick="selectwh(this.value)" name="cars" id="cars">
+                            <option value=""></option>
+                        {% for i in range(len) %}
+                            <option value="{{warehouses[i]}}">{{ warenames[i]}}</option>
+                        {% endfor %}
+                        </select>
+                        <input id="adr" type="text" name="address" placeholder="Enter address" required>
                         <input type="text" name="start" placeholder="Enter start date and time" required>
+                        <input type="datetime-local" id="expdate" name="expteddate">
                         <input type="text" name="expected" placeholder="Enter expected delivery time" required>
                         <input type="text" name="note" placeholder="Enter any details" required>
                         <input type="submit" value="Add Location" id="add-location-submit">
