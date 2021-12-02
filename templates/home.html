@@ -36,7 +36,6 @@
                     <ul class="dropdown-menu">
                         <li><a href="/profile">Profile Page</a></li>
                         <li><a href="/logout">Logout</a></li>
-                        <li><a href="#">Submenu </a></li>
                     </ul>
                 </li>
             </div>
@@ -75,7 +74,7 @@
                     </script>
 
                     <form action="/add_delivery" method="POST">
-                        <label for="cars">Exisiting Warehouse:</label>
+                        <label for="cars" style="color: white;">Exisiting Warehouse:</label>
 
                         <select onclick="selectwh(this.value)" name="cars" id="cars">
                             <option value=""></option>
@@ -84,9 +83,8 @@
                             {% endfor %}
                         </select>
                         <input id="adr" type="text" name="address" placeholder="Enter address" required>
-                        <input type="text" name="start" placeholder="Enter start date and time" required>
-                        <input type="datetime-local" id="expdate" name="expteddate">
-                        <input type="text" name="expected" placeholder="Enter expected delivery time" required>
+                        <input type="date" name="start" placeholder="Enter start date and time" required>
+                        <input type="date" name="expected" placeholder="Enter expected delivery time" required>
                         <input type="text" name="note" placeholder="Enter any details" required>
                         <input type="submit" value="Add Location" id="add-location-submit">
                     </form>
