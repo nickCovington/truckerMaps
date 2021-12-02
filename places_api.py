@@ -8,6 +8,8 @@ load_dotenv(find_dotenv())
 PLACES_API_KEY = os.getenv("PLACES_API_KEY")
 
 # url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=4825%20dunwoody%20station%20drive&key=ENTER_API_KEY"
+addresslist = []
+Whid = []
 
 # fetch address, latitude & longitude coords from Places API
 def getPlaceInfo(placeName):
@@ -28,6 +30,18 @@ def getPlaceInfo(placeName):
 
     try:
         # getting relevant data out of json
+       
+
+        addresslist.clear()
+        
+        if len(json_data.get("results"))<=5:
+            for i in  range(len(json_data.get("results"))):    
+                addresslist.append(json_data.get("results")[i].get("formatted_address"))
+                Whid.append(i)
+        else:
+            for i in  range(5):    
+                addresslist.append(json_data.get("results")[i].get("formatted_address"))
+        
         address = json_data["results"][0]["formatted_address"]
         latitude = json_data["results"][0]["geometry"]["location"]["lat"]
         longitude = json_data["results"][0]["geometry"]["location"]["lng"]
