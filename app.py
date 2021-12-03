@@ -16,6 +16,7 @@ from wtforms import RadioField
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError
 from places_api import PLACES_API_KEY, getPlaceInfo, addresslist
+from datetime import datetime
 
 import random
 import base64
@@ -229,16 +230,27 @@ def home():
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
+    curr = []
+    past = []
+    curr_del_ids = []
     del_ids = []
     for de in d_list:
-        existing_dels.append([de.warehouseID, de.startDate, de.expectedAt])
-        del_ids.append(de.id)
-
-    try:
-        dlen = len(existing_dels)
-    except:
-        dlen = 0
-    d = 0
+        temp = de.expectedAt
+        temp.replace('/', ' ')
+        temp2 = datetime.strptime(temp, '%Y-%m-%d')
+        try:
+            add_comp = warehouse.query.filter_by(id=de.warehouseID).first().address
+            add_end = add_comp[:add_comp.index(',')]
+        except:
+            add_end = "Warehouse Deleted"
+        existing_dels.append([f" Start: {de.startDate} | End: {de.expectedAt} | {add_end}"])
+        if temp2 < datetime.now():
+            past.append([f" Start: {de.startDate} | End: {de.expectedAt} | {add_end}"])
+            del_ids.append(de.id)
+        else:
+            curr.append([f" Start: {de.startDate} | End: {de.expectedAt} | {add_end}"])
+            curr_del_ids.append(de.id)
+    
     if len(num) == 2:
         num.clear()
         return flask.render_template(
@@ -253,11 +265,14 @@ def home():
             usern=flask_login.current_user.username,
             warehouses=existing_adds,
             len=len(existing_adds),
-            len2=dlen,
+            len_curr=len(curr),
+            len_past=len(past),
             len3=len(addresslist),
             newadd=addresslist,
-            deliveries=existing_dels,
+            current=curr,
+            past=past,
             googleMapURL=googleMapURL,
+            curr_del_ids=curr_del_ids,
             del_ids=del_ids,
             wh_ids=add_ids,
         )
@@ -273,15 +288,21 @@ def home():
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
         len=len(existing_adds),
-        len2=dlen,
+        len_curr=len(curr),
+        len_past=len(past),
         len3=len(addresslist),
         newadd=addresslist,
-        deliveries=existing_dels,
+        current=curr,
+        past=past,
         googleMapURL=googleMapURL,
         del_ids=del_ids,
+        curr_del_ids=curr_del_ids,
         wh_ids=add_ids,
     )
 
+# def ongoing():
+#     userID = flask_login.current_user.id
+#     d_list = delivery.query.filter_by(userID=userID).all()
 
 @app.route("/add_delivery", methods=["GET", "POST"])
 @login_required
@@ -317,6 +338,7 @@ def add_delivery():
         dexists = delivery.query.filter_by(
             userID=userID, expectedAt=expectedAt, warehouseID=wID
         ).first()
+
         if dexists:
             print("not new")
             flask.flash("This exact delivery already exists")
@@ -344,33 +366,49 @@ def add_delivery():
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
+    curr = []
+    past = []
+    curr_del_ids = []
     del_ids = []
     for de in d_list:
-        existing_dels.append([de.warehouseID, de.startDate, de.expectedAt])
-        del_ids.append(de.id)
+        existing_dels.append([f"Warehouse: {de.warehouseID}", f"Start: {de.startDate}", f"Expected Delivery: {de.expectedAt}"])
+        temp = de.expectedAt
+        temp.replace('/', ' ')
+        temp2 = datetime.strptime(temp, '%Y-%m-%d')
+        if temp2 < datetime.now():
+            past.append([f"Warehouse: {de.warehouseID}", f"Start: {de.startDate}", f"Expected Delivery: {de.expectedAt}"])
+            del_ids.append(de.id)
+        else:
+            curr.append([f"Warehouse: {de.warehouseID}", f"Start: {de.startDate}", f"Expected Delivery: {de.expectedAt}"])
+            curr_del_ids.append(de.id)
 
     try:
         dlen = len(existing_dels)
     except:
         dlen = 0
 
-    return flask.render_template(
-        "home.html",
-        nwarehouses_tab="",
-        delivery_tab="active",
-        warehouse_tab="",
-        a=" ",
-        b="show active",
-        warenames=wh_names,
-        usern=flask_login.current_user.username,
-        warehouses=existing_adds,
-        len=len(existing_adds),
-        len2=dlen,
-        deliveries=existing_dels,
-        googleMapURL=googleMapURL,
-        del_ids=del_ids,
-        wh_ids=add_ids,
-    )
+    # return flask.render_template(
+    #     "home.html",
+    #     nwarehouses_tab="",
+    #     delivery_tab="active",
+    #     warehouse_tab="",
+    #     a=" ",
+    #     b="show active",
+    #     warenames=wh_names,
+    #     usern=flask_login.current_user.username,
+    #     warehouses=existing_adds,
+    #     len=len(existing_adds),
+    #     len_curr=len(curr),
+    #     len_past=len(past),
+    #     len3=len(addresslist),
+    #     newadd=addresslist,
+    #     current=curr,
+    #     past=past,
+    #     googleMapURL=googleMapURL,
+    #     del_ids=del_ids,
+    #     wh_ids=add_ids,
+    # )
+    return flask.redirect(flask.url_for('home'))
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -480,7 +518,7 @@ def deleteD(id):
 
 @app.route("/deleteW/<int:id>")
 def deleteW(id):
-    del_to_delete = warehouse.query.get_or_404(id)
+    del_to_delete = warehouse.query.filter_by(id=id).first()
     num.clear()
     num.append(0)
     num.append(0)
