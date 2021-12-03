@@ -24,7 +24,7 @@ import requests
 app = flask.Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.config["SECRET_KEY"] = "testing"
-
+MAP_API_KEY=os.getenv('MAP_API_KEY')
 db = SQLAlchemy(app)
 
 # app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL").replace(
@@ -164,7 +164,7 @@ def home():
     userID = flask_login.current_user.id
 
     googleMapURL = None
-
+    googleMapMarkersURL=None
     # if user attempts to add new location
     if flask.request.method == "POST":
         locationToAdd = flask.request.form.get("location-to-add")
@@ -176,7 +176,10 @@ def home():
             + "&q="
             + locationToAdd
         )
-
+        googleMapMarkersURL=(
+            "https://maps.googleapis.com/maps/api/js?key="
+            + MAP_API_KEY
+        )
         # placeInfo = dictionary containing {address, lat, lon, name}
         placeInfo = getPlaceInfo(locationToAdd)
 
@@ -184,7 +187,7 @@ def home():
         latitude = placeInfo["lat"]
         longitude = placeInfo["lon"]
         name = placeInfo["name"]
-
+        
         wexists = warehouse.query.filter_by(address=address, userID=userID).first()
         if wexists:
             flask.flash(address + " already exists in your saved list")
@@ -203,7 +206,11 @@ def home():
     for wh in w_list:
         existing_adds.append(wh.address)
         add_ids.append(wh.id)
-    
+    markerData={}
+    for wh in w_list:
+        markerData[wh.id]=[wh.lat, wh.lng,wh.name]
+    markerData=json.dumps(markerData)
+    print (markerData)
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
@@ -221,6 +228,7 @@ def home():
         "home.html", 
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
+        googleMapMarkersURL=googleMapMarkersURL,
         len=len(existing_adds),
         len2=dlen,
         deliveries=existing_dels,
@@ -234,7 +242,7 @@ def home():
 def add_delivery():
     userID = flask_login.current_user.id
     googleMapURL = None
-
+    googleMapMarkersURL=None
     if flask.request.method == "POST":
         startDate = flask.request.form.get("start")
         expectedAt = flask.request.form.get("expected")
@@ -244,6 +252,10 @@ def add_delivery():
             + PLACES_API_KEY
             + "&q="
             + flask.request.form.get("address")
+        )
+        googleMapMarkersURL=(
+            "https://maps.googleapis.com/maps/api/js?key="
+            + MAP_API_KEY
         )
         placeInfo = getPlaceInfo(flask.request.form.get("address"))
         wAdd = placeInfo["address"]
@@ -271,10 +283,15 @@ def add_delivery():
     w_list = warehouse.query.filter_by(userID=userID).all()
     existing_adds = []
     add_ids = []
+    markerData ={}
+    for wh in w_list:
+        markerData[wh.id]=[wh.lat, wh.lng,wh.name]
     for wh in w_list:
         existing_adds.append(wh.address)
         add_ids.append(wh.id)
-    
+    markerData=json.dumps(markerData)
+    print (markerData)
+    print(existing_adds)
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
@@ -292,6 +309,8 @@ def add_delivery():
         "home.html", 
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
+        googleMapMarkersURL=googleMapMarkersURL,
+        markerData=markerData,
         len=len(existing_adds),
         len2=dlen,
         deliveries=existing_dels,
