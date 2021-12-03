@@ -2,6 +2,7 @@
 *{box-sizing:border-box;}
 
 body {
+  width: 95%;
   font-family: 'open sans', helvetica, arial, sans;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -164,9 +165,11 @@ img{
 }
 
 .warehouse-list{
+  align-items: center;
   list-style: none;
   text-align: center;
   border: 1px solid #F5B041;
+  border-radius: 5px;
   padding: 10px;
   background: rgba(255, 255, 255, 0.6);
   color: black;

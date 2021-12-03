@@ -63,10 +63,20 @@
 
                     <br>
 
-                    {% for i in range(len2) %}
-                    <li class="warehouse-list">{{ deliveries[i] }} <a
-                            href="{{ url_for( 'deleteD', id=del_ids[i]) }}">Delete</a></li>
-                    {% endfor %}
+                    <h3 style="text-align: left; color: white;">Ongoing</h3>
+                    {% if len_curr > 0%}
+                        {% for i in range(len_curr) %}
+                        <li class="warehouse-list">{{ current[i][0] }} <a
+                                href="{{ url_for( 'deleteD', id=curr_del_ids[i]) }}">Delete</a></li>
+                        {% endfor %}
+                    {% endif %}
+                    <h3 style="text-align: left; color: white;">Past</h3>
+                    {% if len_past > 0%}
+                        {% for i in range(len_past) %}
+                        <li class="warehouse-list">{{ past[i][0] }} <a
+                                href="{{ url_for( 'deleteD', id=del_ids[i]) }}">Delete</a></li>
+                        {% endfor %}
+                    {% endif %}
                     <script>
                         function selectwh(location) {
                             document.getElementById("adr").setAttribute('value', location);
@@ -74,7 +84,7 @@
                     </script>
 
                     <form action="/add_delivery" method="POST">
-                        <label for="cars" style="color: white;">Exisiting Warehouse:</label>
+                        <label for="cars" style="text-align: left; color: white;">Exisiting Warehouse:</label>
 
                         <select onclick="selectwh(this.value)" name="cars" id="cars">
                             <option value=""></option>
@@ -86,7 +96,7 @@
                         <input type="date" name="start" placeholder="Enter start date and time" required>
                         <input type="date" name="expected" placeholder="Enter expected delivery time" required>
                         <input type="text" name="note" placeholder="Enter any details" required>
-                        <input type="submit" value="Add Location" id="add-location-submit">
+                        <input type="submit" value="Add Delivery" id="add-location-submit">
                     </form>
 
                 </div>
@@ -104,7 +114,7 @@
                         </ul>
                         {% endif %}
 
-                        <h2>Current Locations:</h2>
+                        <h2>Select one of the locations:</h2>
 
                         {% for i in range(len3) %}
                         <li class="warehouse-list">{{ newadd[i] }}
