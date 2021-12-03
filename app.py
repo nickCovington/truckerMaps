@@ -366,6 +366,8 @@ def add_delivery():
         warehouses=existing_adds,
         len=len(existing_adds),
         len2=dlen,
+        len3=len(addresslist),
+        newadd=addresslist,
         deliveries=existing_dels,
         googleMapURL=googleMapURL,
         del_ids=del_ids,
