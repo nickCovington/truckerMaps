@@ -3,6 +3,7 @@
 }
 
 body {
+  width: 95%;
   font-family: "open sans", helvetica, arial, sans;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -26,9 +27,14 @@ body {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
-  box-shadow: rgba(255, 153, 0, 0.4) -5px 5px, rgba(255, 153, 0, 0.3) -10px 10px,
-    rgba(255, 153, 0, 0.2) -15px 15px, rgba(255, 153, 0, 0.1) -20px 20px,
-    rgba(255, 153, 0, 0.05) -25px 25px;
+  /* box-shadow: rgba(255, 153, 0, 0.4) -5px 5px, 
+              rgba(255, 153, 0, 0.3) -10px 10px, 
+              rgba(255, 153, 0, 0.2) -15px 15px, 
+              rgba(255, 153, 0, 0.1) -20px 20px, 
+              rgba(255, 153, 0, 0.05) -25px 25px; */
+  box-shadow: rgba(255, 255, 255, 0.4) -5px 5px,
+    rgba(255, 255, 255, 0.3) -10px 10px, rgba(255, 255, 255, 0.2) -15px 15px,
+    rgba(255, 255, 255, 0.1) -20px 20px, rgba(255, 255, 255, 0.05) -25px 25px;
   padding: 10px;
 }
 
@@ -37,15 +43,15 @@ body {
 }
 
 #sign-up-msg {
-  color: #f5b041;
-  background: black;
+  color: rgb(23, 216, 216);
+  background: rgba(0, 0, 0, 0.55);
   border-radius: 10px;
   padding: 5px;
   text-decoration: none;
 }
 
 #sign-up-msg:hover {
-  color: #b00bf5;
+  color: #f5b041;
 }
 
 form {
@@ -159,12 +165,27 @@ img {
 }
 
 .warehouse-list {
+  align-items: center;
   list-style: none;
   text-align: center;
   border: 1px solid #f5b041;
+  border-radius: 5px;
   padding: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  color: black;
+}
+
+#map-div {
+  place-items: center;
 }
 
 #map {
+  display: block;
+  margin: auto;
+  border-radius: 10px;
   height: 60vh;
+}
+
+input {
+  border-radius: 5px;
 }
