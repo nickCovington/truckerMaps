@@ -47,7 +47,7 @@ Insert user stories, ideal usage, and UI navigation.
 ## Cloning and usage
 Note: to use this app properly, you will need to register for a Google dev account, create a new project, authenticate your account & on your project enable the Google Places API and the Google Maps Embed API.
 
-To contribute to this app you will need your own Google API key.
+To contribute to this app you will need to use your own Google API key.
 
 `git clone https://github.com/nickCovington/truckerMaps.git`
 
