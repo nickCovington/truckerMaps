@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru&family=Roboto&display=swap');
+
 
 *{box-sizing:border-box;}
 
 body {
-  width: 95%;
+  /* width: 95%; */
+  width: 100%;
   font-family: 'open sans', helvetica, arial, sans;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -18,7 +21,8 @@ body {
   min-width: 320px;
   max-width: 475px;
   background: rgb(177, 182, 211);
-  position: absolute;
+  /* position: absolute; */
+  position: relative;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%,-50%);
@@ -27,11 +31,6 @@ body {
   -ms-transform: translate(-50%,-50%);
   transform: translate(-50%,-50%);
   box-shadow: 0px 2px 5px rgba(0,0,0,.25);
-  /* box-shadow: rgba(255, 153, 0, 0.4) -5px 5px, 
-              rgba(255, 153, 0, 0.3) -10px 10px, 
-              rgba(255, 153, 0, 0.2) -15px 15px, 
-              rgba(255, 153, 0, 0.1) -20px 20px, 
-              rgba(255, 153, 0, 0.05) -25px 25px; */
   box-shadow: rgba(255, 255, 255, 0.4) -5px 5px, 
               rgba(255, 255, 255, 0.3) -10px 10px, 
               rgba(255, 255, 255, 0.2) -15px 15px, 
@@ -61,7 +60,12 @@ form {
     width: 100%;
     padding: 2em;
   }
+ 
   
+h1{
+  font-family: 'open sans condensed'; 
+}
+
 h2 {
     width: 100%;
     color: lighten(2a2a2a, 20%);
@@ -189,3 +193,42 @@ input{
   border-radius: 5px;
 }
 
+#landing-div{
+  margin: 0;
+  padding: 0;
+  background: url('https://images.unsplash.com/photo-1494412519320-aa613dfb7738?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80') no-repeat center/cover;
+  width: 99%;
+  height: 100vh;
+  position: relative;
+  overflow-y: hidden;
+  border-radius: 10px;
+  font-family: 'Kiwi Maru', serif;
+  font-family: 'Roboto', sans-serif;
+  place-items: center;
+}
+
+#landing-content{
+  margin: auto;
+  place-items: center;
+  background: rgba(0,0,0,.85);
+  color: white;
+  width: 50%;
+  font: bold;
+  border-radius: 10px;
+  font-size: larger;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+#landing-content h1{
+  border-bottom: #F5B041 solid 3px;
+}
+
+#landing-content a{
+  color: #F5B041;
+  text-decoration: none;
+}
+
+#landing-content a:hover{
+  color: #f5b0417c;
+}
