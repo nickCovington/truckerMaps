@@ -84,9 +84,9 @@
                     </script>
 
                     <form action="/add_delivery" method="POST">
-                        <label for="cars" style="text-align: left; color: white;">Exisiting Warehouse:</label>
+                        <label for="existingwh" style="text-align: left; color: white;">Exisiting Warehouse:</label>
 
-                        <select onclick="selectwh(this.value)" name="cars" id="cars">
+                        <select onclick="selectwh(this.value)" name="existingwh" id="existingwh">
                             <option value=""></option>
                             {% for i in range(len) %}
                             <option value="{{warehouses[i]}}">{{ warenames[i]}}</option>
@@ -103,38 +103,27 @@
                 <div class="tab-pane fade{{b}}" id="v-pills-nwarehouses" role="tabpanel"
                     aria-labelledby="v-pills-nwarehouses-tab">
                     <h3 id="new-warehouse"> New Warehouse</h3>
+                    <h2>Select one of the locations:</h2>
 
-            <form action="/add_delivery" method="POST">
-              <input
-                type="text"
-                name="address"
-                placeholder="Enter address"
-                required
-              />
-              <input
-                type="date"
-                name="start"
-                placeholder="Enter start date and time"
-                required
-              />
-              <input
-                type="date"
-                name="expected"
-                placeholder="Enter expected delivery time"
-                required
-              />
-              <input
-                type="text"
-                name="note"
-                placeholder="Enter any details"
-                required
-              />
-              <input
-                type="submit"
-                value="Add Location"
-                id="add-location-submit"
-              />
-            </form>
+                        {% for i in range(len3) %}
+                        <li class="warehouse-list">{{ newadd[i] }}
+                            <button id="wh{{loop.index}}" onclick="setValue('{{newadd[i]}}','wh{{loop.index}}')">Add
+                                Warehouse</button>
+                        </li>
+
+                        {% endfor %}
+
+
+                        <br>
+
+              <h2>Add a new warehouse location:</h2>
+
+                        <form action="/home" method="POST">
+                            <input type="text" id="sbox" name="location-to-add" placeholder="Enter address" required>
+                            <input type="hidden" id="selectwh" name="selectwh" value="none0">
+                            <input type="submit" name=addwhs value="SearchLocation" id="add-location-submit">
+                            <input type="submit" name=addwhs value="AddLocation" id="add-location-submit">
+                        </form>
           </div>
           <div
             class="tab-pane fade"
@@ -195,27 +184,7 @@
                 async
               ></script>
               <br />
-                        <h2>Select one of the locations:</h2>
-
-                        {% for i in range(len3) %}
-                        <li class="warehouse-list">{{ newadd[i] }}
-                            <button id="wh{{loop.index}}" onclick="setValue('{{newadd[i]}}','wh{{loop.index}}')">Add
-                                Warehouse</button>
-                        </li>
-
-                        {% endfor %}
-
-
-                        <br>
-
-              <h2>Add a new warehouse location:</h2>
-
-                        <form action="/home" method="POST">
-                            <input type="text" id="sbox" name="location-to-add" placeholder="Enter address" required>
-                            <input type="hidden" id="selectwh" name="selectwh" value="none0">
-                            <input type="submit" name=addwhs value="SearchLocation" id="add-location-submit">
-                            <input type="submit" name=addwhs value="AddLocation" id="add-location-submit">
-                        </form>
+                        
                         <script>
                             function setValue(adval, id) {
                                 document.getElementById("selectwh").setAttribute('value', adval);
