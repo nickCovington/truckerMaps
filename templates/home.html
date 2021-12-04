@@ -1,20 +1,20 @@
 <html>
-
-<head>
+  <head>
     <title>Trucker Maps | Home</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
 
-<body align=center>
-    <br><br>
-    <h1 align=center id="welcome-msg">Welcome, {{ usern }}</h1>
-    <div>
-
-    </div>
+  <body align="center">
+    <br /><br />
+    <h1 align="center" id="welcome-msg">Welcome, {{ usern }}</h1>
+    <div></div>
 
     <div class="row">
         <div class="col-3">
@@ -104,16 +104,97 @@
                     aria-labelledby="v-pills-nwarehouses-tab">
                     <h3 id="new-warehouse"> New Warehouse</h3>
 
+            <form action="/add_delivery" method="POST">
+              <input
+                type="text"
+                name="address"
+                placeholder="Enter address"
+                required
+              />
+              <input
+                type="date"
+                name="start"
+                placeholder="Enter start date and time"
+                required
+              />
+              <input
+                type="date"
+                name="expected"
+                placeholder="Enter expected delivery time"
+                required
+              />
+              <input
+                type="text"
+                name="note"
+                placeholder="Enter any details"
+                required
+              />
+              <input
+                type="submit"
+                value="Add Location"
+                id="add-location-submit"
+              />
+            </form>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="v-pills-warehouses"
+            role="tabpanel"
+            aria-labelledby="v-pills-warehouses-tab"
+          >
+            <h3 id="new-warehouse">New Warehouse</h3>
 
-                    <div id="add-location-container">
-                        {% if get_flashed_messages() %}
-                        <ul class="flashes">
-                            {% for msg in get_flashed_messages() %}
-                            <li>{{msg}}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
+            <div id="add-location-container">
+              {% if get_flashed_messages() %}
+              <ul class="flashes">
+                {% for msg in get_flashed_messages() %}
+                <li>{{msg}}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
 
+              <h2>Current Locations:</h2>
+
+              {% for i in range(len) %}
+              <li class="warehouse-list">
+                {{ warehouses[i] }}
+                <a href="{{ url_for( 'deleteW', id=wh_ids[i]) }}">Delete</a>
+              </li>
+              {% endfor %}
+              <h2>Maps</h2>
+              <div id="map"></div>
+              <script type="text/javascript">
+                var markerData = JSON.parse('{{ markerData|safe }}')
+            </script>
+              <script>
+                function initMap() {
+                  map = new google.maps.Map(document.getElementById("map"), {
+                    mapId: "791b24b8f922f472",
+                    center: { lat: 33.86537244179991, lng: -83.91752444330994 },
+                    zoom: 8,
+                  });
+                  //Name
+                  //Longitude
+                  //Latitude
+                  
+                  for (let i in markerData) {
+                    const currentMarker = markerData[i];
+                    new google.maps.Marker({
+                      position: {
+                        lat: currentMarker[0],
+                        lng: currentMarker[1],
+                      },
+                      map,
+                      title: currentMarker[2],
+                    });
+                  }
+                }
+              </script>
+              <script
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDniRUgUIIII-BYp3aj6NCmFHyqUuziCk0&callback=initMap&v=weekly"
+                async
+              ></script>
+              <br />
                         <h2>Select one of the locations:</h2>
 
                         {% for i in range(len3) %}
@@ -127,7 +208,7 @@
 
                         <br>
 
-                        <h2>Add a new warehouse location:</h2>
+              <h2>Add a new warehouse location:</h2>
 
                         <form action="/home" method="POST">
                             <input type="text" id="sbox" name="location-to-add" placeholder="Enter address" required>
@@ -158,12 +239,21 @@
 
                 </div>
             </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="v-pills-managers"
+            role="tabpanel"
+            aria-labelledby="v-pills-managers-tab"
+          ></div>
+          <div
+            class="tab-pane fade"
+            id="v-pills-truckers"
+            role="tabpanel"
+            aria-labelledby="v-pills-truckers-tab"
+          ></div>
         </div>
+      </div>
     </div>
-
-
-
-
-</body>
-
+  </body>
 </html>

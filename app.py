@@ -25,8 +25,7 @@ import requests
 app = flask.Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.config["SECRET_KEY"] = "testing"
-
-
+MAP_API_KEY=os.getenv('MAP_API_KEY')
 db = SQLAlchemy(app)
 
 # app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL").replace(
@@ -162,19 +161,36 @@ def home():
     userID = flask_login.current_user.id
 
     googleMapURL = None
-
+    googleMapMarkersURL=None
     # if user attempts to add new location
     if flask.request.method == "POST":
+        locationToAdd = flask.request.form.get("location-to-add")
 
-        if flask.request.form["addwhs"] == "SearchLocation":
-            locationToAdd = flask.request.form.get("location-to-add")
+        # url to dynamically generate a google map based on user-input
+        googleMapURL = (
+            "https://www.google.com/maps/embed/v1/place?key="
+            + PLACES_API_KEY
+            + "&q="
+            + locationToAdd
+        )
+        googleMapMarkersURL=(
+            "https://maps.googleapis.com/maps/api/js?key="
+            + MAP_API_KEY
+        )
+        # placeInfo = dictionary containing {address, lat, lon, name}
+        placeInfo = getPlaceInfo(locationToAdd)
 
-            # url to dynamically generate a google map based on user-input
-            googleMapURL = (
-                "https://www.google.com/maps/embed/v1/place?key="
-                + PLACES_API_KEY
-                + "&q="
-                + locationToAdd
+        address = placeInfo["address"]
+        latitude = placeInfo["lat"]
+        longitude = placeInfo["lon"]
+        name = placeInfo["name"]
+        
+        wexists = warehouse.query.filter_by(address=address, userID=userID).first()
+        if wexists:
+            flask.flash(address + " already exists in your saved list")
+        else:
+            new_w = warehouse(
+                name=name, address=address, lat=latitude, lng=longitude, userID=userID
             )
 
             # placeInfo = dictionary containing {address, lat, lon, name}
@@ -226,7 +242,12 @@ def home():
         wh_names.append(wh.name)
         existing_adds.append(wh.address)
         add_ids.append(wh.id)
-
+    markerData={}
+    for wh in w_list:
+        markerData[wh.id]=[wh.lat, wh.lng,wh.name]
+        
+    markerData=json.dumps(markerData)
+    print (markerData)
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
@@ -287,6 +308,7 @@ def home():
         c="",
         usern=flask_login.current_user.username,
         warehouses=existing_adds,
+        googleMapMarkersURL=googleMapMarkersURL,
         len=len(existing_adds),
         len_curr=len(curr),
         len_past=len(past),
@@ -298,6 +320,7 @@ def home():
         del_ids=del_ids,
         curr_del_ids=curr_del_ids,
         wh_ids=add_ids,
+        markerData=markerData
     )
 
 # def ongoing():
@@ -309,7 +332,7 @@ def home():
 def add_delivery():
     userID = flask_login.current_user.id
     googleMapURL = None
-
+    googleMapMarkersURL=None
     if flask.request.method == "POST":
         startDate = flask.request.form.get("start")
         expectedAt = flask.request.form.get("expected")
@@ -319,6 +342,10 @@ def add_delivery():
             + PLACES_API_KEY
             + "&q="
             + flask.request.form.get("address")
+        )
+        googleMapMarkersURL=(
+            "https://maps.googleapis.com/maps/api/js?key="
+            + MAP_API_KEY
         )
         placeInfo = getPlaceInfo(flask.request.form.get("address"))
         wAdd = placeInfo["address"]
@@ -358,11 +385,16 @@ def add_delivery():
     existing_adds = []
     wh_names = []
     add_ids = []
+    markerData ={}
+    for wh in w_list:
+        markerData[wh.id]=[wh.lat, wh.lng,wh.name]
     for wh in w_list:
         wh_names.append(wh.name)
         existing_adds.append(wh.address)
         add_ids.append(wh.id)
-
+    markerData=json.dumps(markerData)
+    print (markerData)
+    print(existing_adds)
     print(f"before d_list id={userID}")
     d_list = delivery.query.filter_by(userID=userID).all()
     existing_dels = []
