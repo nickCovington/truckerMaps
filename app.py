@@ -259,8 +259,11 @@ def home():
         temp = de.expectedAt
         temp.replace('/', ' ')
         temp2 = datetime.strptime(temp, '%Y-%m-%d')
-        add_comp = warehouse.query.filter_by(id=de.warehouseID).first().address
-        add_end = add_comp[:add_comp.index(',')]
+        try:
+            add_comp = warehouse.query.filter_by(id=de.warehouseID).first().address
+            add_end = add_comp[:add_comp.index(',')]
+        except:
+            add_end = "Warehouse Deleted"
         existing_dels.append([f" Start: {de.startDate} | End: {de.expectedAt} | {add_end}"])
         if temp2 < datetime.now():
             past.append([f" Start: {de.startDate} | End: {de.expectedAt} | {add_end}"])
@@ -290,6 +293,7 @@ def home():
             current=curr,
             past=past,
             googleMapURL=googleMapURL,
+            curr_del_ids=curr_del_ids,
             del_ids=del_ids,
             wh_ids=add_ids,
         )
@@ -546,7 +550,7 @@ def deleteD(id):
 
 @app.route("/deleteW/<int:id>")
 def deleteW(id):
-    del_to_delete = warehouse.query.get_or_404(id)
+    del_to_delete = warehouse.query.filter_by(id=id).first()
     num.clear()
     num.append(0)
     num.append(0)
