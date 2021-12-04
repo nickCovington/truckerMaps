@@ -415,6 +415,10 @@ def add_delivery():
 @login_required
 def profile():
     return flask.render_template("profile.html", data=get_profile_details())
+@app.route("/indexprof", methods=["GET", "POST"])
+@login_required
+def indexp():
+    return flask.render_template("Profile-Page.html", data=get_profile_details())
 
 
 @app.route("/edit", methods=["GET", "POST"])
